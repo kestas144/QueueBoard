@@ -23,7 +23,13 @@ class QueryBuilder
 
     public function whereId($id): QueryBuilder
     {
-        $this->queryString = $this->queryString . " WHERE id = $id ";
+        $this->queryString = $this->queryString . " WHERE id = '$id' ";
+        return $this;
+    }
+
+    public function whereEmployeeId($id): QueryBuilder
+    {
+        $this->queryString = $this->queryString . " WHERE employee_id = '$id' ";
         return $this;
     }
 

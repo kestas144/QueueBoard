@@ -13,11 +13,12 @@ class Board
     private $employeeId;
     private $queryBuilder;
 
-    public function __construct(Database $database, QueryBuilder $queryBuilder, Customer $customer = null)
+    public function __construct(Database $database, QueryBuilder $queryBuilder, Customer $customer = null, string $employeeId = null)
     {
-        $this->customer = $customer;
         $this->database = $database;
         $this->queryBuilder = $queryBuilder;
+        $this->customer = $customer;
+        $this->employeeId = $employeeId;
     }
 
     public function setEmployeeId()
@@ -54,6 +55,19 @@ class Board
         return $this->database->getData($query);
     }
 
+    public function getEmployeeWaitingCustomers(string $boardId = null)
+    {
+        if(isset ($boardId)) {
+            $this->changeStatus('completed', 'board', $boardId);
+        }
+
+        $query = $this->queryBuilder->select()
+            ->from('board')
+            ->whereEmployeeId($this->employeeId);
+
+        return $this->database->getData($query);
+    }
+
     public function writeCustomerToBoard()
     {
         $customerName = $this->customer->getName();
@@ -72,15 +86,17 @@ class Board
 
         $boardEntryQuery = $this->queryBuilder->insertInto('board', $paramNameString, $paramValueString);
         $this->database->setData($boardEntryQuery);
+        
         $this->changeStatus('busy','employees',$this->employeeId);
     }
 
     private function changeStatus(string $status, string $table, string $id)
     {
         $paramString = "status = '$status'";
-        $employeeStatus = $this->queryBuilder->update($table, $paramString)->whereId($id);
-        $this->database->setData($employeeStatus);
+        $query = $this->queryBuilder->update($table, $paramString)->whereId($id);
+        $this->database->setData($query);
     }
+
 
 
 

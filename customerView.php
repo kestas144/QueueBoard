@@ -10,7 +10,7 @@ require_once  'Database/QueryBuilder.php';
 require_once  'Classes/Board.php';
 require_once  'Classes/Customer.php';
 
-if (!empty($_POST['name'])){
+if (isset($_POST['name'])){
     $database = new BoardDatabase("localhost", "3308","db_board", "root", "");
     $builder = new QueryBuilder();
     $customer = new Customer();

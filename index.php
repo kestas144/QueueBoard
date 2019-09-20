@@ -25,7 +25,7 @@ $customers = $board->getAllWaitingCustomers();
 <body>
 <div class="container">
 
-        <form method="POST" action="/testView.php">
+        <form method="POST" action="/customerView.php">
 
         <label for="name">Name</label>
         <input type="text" name="name" placeholder="Your name..">
