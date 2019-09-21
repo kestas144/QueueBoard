@@ -27,9 +27,9 @@ class Board
             ->from('employees')
             ->whereStatus('free');
 
-        $freeCustomerId = $this->database->getData($query);
+        $freeEmployeeId = $this->database->getData($query);
 
-        if (empty($freeCustomerId)) {
+        if (empty($freeEmployeeId)) {
             $board = $this->queryBuilder->select()
                 ->from('board');
             $data = $this->database->getData($board);
@@ -39,7 +39,7 @@ class Board
             $this->employeeId = key($employees);
 
         } else {
-            $this->employeeId = $freeCustomerId[0]['id'];
+            $this->employeeId = $freeEmployeeId[0]['id'];
         }
     }
 
@@ -57,8 +57,20 @@ class Board
 
     public function getEmployeeWaitingCustomers(string $boardId = null)
     {
-        if(isset ($boardId)) {
+        if (isset ($boardId)) {
             $this->changeStatus('completed', 'board', $boardId);
+            $operationTime = $this->getOperationTime($boardId);
+            $data = $this->getDataFromDb($this->employeeId, 'customer_count, average_operation_time', 'employees');
+            $averageTime = $this->getAverageOperationTime(
+                $data[0]['customer_count'],
+                $data[0]['average_operation_time'],
+                $operationTime
+            );
+            $customerCount = $data[0]['customer_count']+1;
+            $paramString = "customer_count = '" . $customerCount . "', average_operation_time = '$averageTime"."'";
+
+            $this->changeColumn($paramString,'employees',$this->employeeId);
+
         }
 
         $query = $this->queryBuilder->select()
@@ -86,8 +98,8 @@ class Board
 
         $boardEntryQuery = $this->queryBuilder->insertInto('board', $paramNameString, $paramValueString);
         $this->database->setData($boardEntryQuery);
-        
-        $this->changeStatus('busy','employees',$this->employeeId);
+
+        $this->changeStatus('busy', 'employees', $this->employeeId);
     }
 
     private function changeStatus(string $status, string $table, string $id)
@@ -97,7 +109,34 @@ class Board
         $this->database->setData($query);
     }
 
+    private function changeColumn(string $paramString, string $table, string $id)
+    {
+        $paramString;
+        $query = $this->queryBuilder->update($table, $paramString)->whereId($id);
+        var_dump($query);
+        $this->database->setData($query);
+    }
 
+    private function getOperationTime(string $id): int
+    {
+        $data = $this->getDataFromDb($id, 'created_at, updated_at', 'board');
+        $time = strtotime($data[0]['updated_at']) - strtotime($data[0]['created_at']);
+        return $time;
+    }
 
+    private function getAverageOperationTime(int $count, int $averageTimeInDb, int $averageTimeComputed): int
+    {
+        return ($averageTimeInDb + $averageTimeComputed) / ($count + 1);
+    }
+
+    private function getDataFromDb(string $id, string $column, string $table)
+    {
+        $board = $this->queryBuilder->selectTest()
+            ->column($column)
+            ->from($table)
+            ->whereId($id);
+        return $this->database->getData($board);
+
+    }
 
 }

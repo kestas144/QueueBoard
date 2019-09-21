@@ -47,7 +47,9 @@ class BoardDatabase extends Database
             $sql = "CREATE TABLE employees(
                   id INT(11) AUTO_INCREMENT PRIMARY KEY,
                   name VARCHAR(255) NOT NULL,
-                  status ENUM('busy', 'free') NOT NULL               
+                  status ENUM('busy', 'free') NOT NULL,
+                  customer_count VARCHAR(255) NOT NULL,
+                  average_operation_time VARCHAR(255) NOT NULL
                   )
                   ENGINE = InnoDB CHARACTER SET = utf8";
             $this->database->exec($sql);
@@ -62,8 +64,9 @@ class BoardDatabase extends Database
                   employee_id INT(11) NULL,
                   status ENUM('waiting', 'serviced', 'completed') NOT NULL,
                   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                  CONSTRAINT FK_CustomerBoard FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE,
-                  CONSTRAINT FK_EmployeeBoard FOREIGN KEY (employee_id) REFERENCES employees(id) ON DELETE CASCADE
+                  updated_at TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                  CONSTRAINT FK_CustomerBoard FOREIGN KEY (customer_id) REFERENCES customers(id),
+                  CONSTRAINT FK_EmployeeBoard FOREIGN KEY (employee_id) REFERENCES employees(id)
                   )
                   ENGINE = InnoDB CHARACTER SET = utf8";
             $this->database->exec($sql);

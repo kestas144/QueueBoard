@@ -1,4 +1,5 @@
 <?php
+
 namespace QueueBoard\Database;
 class QueryBuilder
 {
@@ -9,6 +10,30 @@ class QueryBuilder
         $this->queryString = "SELECT *";
         return $this;
     }
+
+    public function selectTest(): QueryBuilder
+    {
+        $this->queryString = "SELECT";
+        return $this;
+    }
+
+    public function timeDiff(): QueryBuilder
+    {
+        $this->queryString = $this->queryString . " TIMESTAMPDIFF as timediff (MINUTE,'created_at','updated_at')";
+        return $this;
+    }
+
+    public function column(string $string): QueryBuilder
+    {
+        if (isset($string)) {
+
+           $this->queryString = $this->queryString . " $string";
+        } else {
+            $this->queryString = $this->queryString . " *";
+        }
+        return $this;
+    }
+
     public function selectId(): QueryBuilder
     {
         $this->queryString = "SELECT id";

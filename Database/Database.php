@@ -18,7 +18,7 @@ abstract class Database
 
     }
 
-    public function getData(QueryBuilder $query)
+    public function getData(string $query)
     {
         $prepared = $this->database->prepare($query);
         $prepared->execute();
