@@ -26,6 +26,7 @@ if (isset($_GET['employeeId'])) {
 ?>
 <html>
 <body>
+
 <div>
     <table>
         <thead>
@@ -53,8 +54,8 @@ if (isset($_GET['employeeId'])) {
         <?php endforeach; ?>
         </tbody>
     </table>
-
 </div>
+
 <script>
 
     function refreshPageWithParameters(boardId) {

@@ -39,6 +39,7 @@ $customers = $board->getAllWaitingCustomers();
         <tr>
             <th>numerelis</th>
             <th>langelis</th>
+            <th>busena</th>
         </tr>
         </thead>
         <tbody>
@@ -47,6 +48,7 @@ $customers = $board->getAllWaitingCustomers();
         <tr>
             <th><?php echo $customer['customer_id'] ?></th>
             <th><?php echo $customer['employee_id'] ?></th>
+            <th><?php echo $customer['status'] ?></th>
         </tr>
 
 <?php endforeach;?>

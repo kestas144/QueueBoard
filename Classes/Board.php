@@ -12,6 +12,8 @@ class Board
     private $database;
     private $employeeId;
     private $queryBuilder;
+    private $employeeCustomerCount;
+    private $employeeAverageTime;
 
     public function __construct(Database $database, QueryBuilder $queryBuilder, Customer $customer = null, string $employeeId = null)
     {
@@ -21,25 +23,33 @@ class Board
         $this->employeeId = $employeeId;
     }
 
-    public function setEmployeeId()
+    public function setEmployeeId(): void
     {
-        $query = $this->queryBuilder->selectId()
-            ->from('employees')
-            ->whereStatus('free');
+        $this->setEmployee('all', 'employees', 'status', 'free');
 
-        $freeEmployeeId = $this->database->getData($query);
-
-        if (empty($freeEmployeeId)) {
-            $board = $this->queryBuilder->select()
-                ->from('board');
+        if ($this->employeeId == null) {
+            $board = $this->queryBuilder
+                ->select()
+                ->column('employee_id')
+                ->from('board')
+                ->where('status', 'waiting')
+                ->or('status', 'serviced');
             $data = $this->database->getData($board);
             $employees = array_count_values(array_column($data, 'employee_id'));
             asort($employees);
             reset($employees);
             $this->employeeId = key($employees);
+            $this->setEmployee('all', 'employees', 'id', $this->employeeId);
+        }
+    }
 
-        } else {
-            $this->employeeId = $freeEmployeeId[0]['id'];
+    public function setEmployee(string $columnName, string $table, string $whereName, string $whereValue): void
+    {
+        $data = $this->getDataFromDb($columnName,$table,$whereName,$whereValue);
+        if (!empty($data)) {
+            $this->employeeId = $data[0]['id'];
+            $this->employeeAverageTime = $data[0]['average_operation_time'];
+            $this->employeeCustomerCount = $data[0]['customer_count'];
         }
     }
 
@@ -50,76 +60,91 @@ class Board
 
     public function getAllWaitingCustomers()
     {
-        $query = $this->queryBuilder->select()
-            ->from('board');
+        $query = $this->queryBuilder
+            ->select()
+            ->column('all')
+            ->from('board')
+            ->where('status', 'waiting')
+            ->or('status','serviced');
         return $this->database->getData($query);
+    }
+
+    public function getEntryByCustomerId($customerId)
+    {
+        return $this->getDataFromDb('all', 'board', 'customer_id', $customerId);
     }
 
     public function getEmployeeWaitingCustomers(string $boardId = null)
     {
         if (isset ($boardId)) {
-            $this->changeStatus('completed', 'board', $boardId);
+            $statusString = "status = 'completed'";
+            $this->changeColumn($statusString, 'board', 'id',$boardId);
             $operationTime = $this->getOperationTime($boardId);
-            $data = $this->getDataFromDb($this->employeeId, 'customer_count, average_operation_time', 'employees');
+            $data = $this->getDataFromDb(
+                'customer_count, average_operation_time',
+                    'employees',
+                    'id',
+                    $this->employeeId);
             $averageTime = $this->getAverageOperationTime(
                 $data[0]['customer_count'],
                 $data[0]['average_operation_time'],
                 $operationTime
             );
-            $customerCount = $data[0]['customer_count']+1;
-            $paramString = "customer_count = '" . $customerCount . "', average_operation_time = '$averageTime"."'";
+            $customerCount = $data[0]['customer_count'] + 1;
+            $paramString = "customer_count = '" . $customerCount . "', average_operation_time = '$averageTime" . "'";
 
-            $this->changeColumn($paramString,'employees',$this->employeeId);
-
+            $this->changeColumn($paramString, 'employees','id', $this->employeeId);
         }
 
-        $query = $this->queryBuilder->select()
-            ->from('board')
-            ->whereEmployeeId($this->employeeId);
-
-        return $this->database->getData($query);
+        return $this->getDataFromDb('all','board','employee_id',$this->employeeId);
     }
 
     public function writeCustomerToBoard()
     {
+        $this->setEmployeeId();
         $customerName = $this->customer->getName();
+
         $query = $this->queryBuilder->insertInto(
             'customers',
             'name',
             "'$customerName'"
         );
         $this->database->setData($query);
-        $customerIdQuery = $this->queryBuilder->selectId()->from('customers')->whereName($customerName);
-        $customerId = $this->database->getData($customerIdQuery);
 
-        $test = $customerId[0]['id'];
-        $paramNameString = 'customer_id , employee_id';
-        $paramValueString = "'$test', '$this->employeeId'";
-
+        $customerIdQuery = $this->queryBuilder
+            ->select()
+            ->column('id')
+            ->from('customers')
+            ->where('name', $customerName);
+        $idArray = $this->database->getData($customerIdQuery);
+        $Id = array_count_values(array_column($idArray, 'id'));
+        $idValue = key($Id);
+        $paramNameString = 'customer_id , employee_id , countdown';
+        $time = $this->calculateTime();
+        $paramValueString = "'$idValue', '$this->employeeId', '$time'";
         $boardEntryQuery = $this->queryBuilder->insertInto('board', $paramNameString, $paramValueString);
         $this->database->setData($boardEntryQuery);
 
-        $this->changeStatus('busy', 'employees', $this->employeeId);
+        $paramString = "status = 'busy'";
+        $this->changeColumn($paramString, 'employees', 'id', $this->employeeId);
+
+    }
+    public function postponeAppointment($string)
+    {
+var_dump($string);
     }
 
-    private function changeStatus(string $status, string $table, string $id)
+    private function changeColumn(string $paramString, string $table, string $whereName, string $whereValue)
     {
-        $paramString = "status = '$status'";
-        $query = $this->queryBuilder->update($table, $paramString)->whereId($id);
-        $this->database->setData($query);
-    }
-
-    private function changeColumn(string $paramString, string $table, string $id)
-    {
-        $paramString;
-        $query = $this->queryBuilder->update($table, $paramString)->whereId($id);
-        var_dump($query);
+        $query = $this->queryBuilder
+            ->update($table, $paramString)
+            ->where($whereName, $whereValue);
         $this->database->setData($query);
     }
 
     private function getOperationTime(string $id): int
     {
-        $data = $this->getDataFromDb($id, 'created_at, updated_at', 'board');
+        $data = $this->getDataFromDb('created_at, updated_at', 'board','id',$id);
         $time = strtotime($data[0]['updated_at']) - strtotime($data[0]['created_at']);
         return $time;
     }
@@ -129,14 +154,26 @@ class Board
         return ($averageTimeInDb + $averageTimeComputed) / ($count + 1);
     }
 
-    private function getDataFromDb(string $id, string $column, string $table)
+    private function getDataFromDb(string $column,  string $table, string $whereField, string $whereValue)
     {
-        $board = $this->queryBuilder->selectTest()
+        $board = $this->queryBuilder
+            ->select()
             ->column($column)
             ->from($table)
-            ->whereId($id);
+            ->where($whereField, $whereValue);
         return $this->database->getData($board);
+    }
 
+    private function calculateTime()
+    {
+        return $this->employeeCustomerCount * $this->employeeAverageTime;
+    }
+
+    private function camelCaseConverter(string $string): string
+    {
+        $str = substr($string, 1);
+        $output = strtolower(preg_replace('/[A-Z]/', '_$0', $str));
+        return $output;
     }
 
 }

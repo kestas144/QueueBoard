@@ -63,6 +63,7 @@ class BoardDatabase extends Database
                   customer_id INT(11) NULL,
                   employee_id INT(11) NULL,
                   status ENUM('waiting', 'serviced', 'completed') NOT NULL,
+                  countdown VARCHAR(255),
                   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                   updated_at TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                   CONSTRAINT FK_CustomerBoard FOREIGN KEY (customer_id) REFERENCES customers(id),

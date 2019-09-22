@@ -1,42 +1,24 @@
 <?php
-
 namespace QueueBoard\Database;
+
 class QueryBuilder
 {
     private $queryString = null;
 
     public function select(): QueryBuilder
     {
-        $this->queryString = "SELECT *";
-        return $this;
-    }
-
-    public function selectTest(): QueryBuilder
-    {
         $this->queryString = "SELECT";
         return $this;
     }
 
-    public function timeDiff(): QueryBuilder
+    public function column(string $columnName): QueryBuilder
     {
-        $this->queryString = $this->queryString . " TIMESTAMPDIFF as timediff (MINUTE,'created_at','updated_at')";
-        return $this;
-    }
+        if ($columnName == 'all') {
 
-    public function column(string $string): QueryBuilder
-    {
-        if (isset($string)) {
-
-           $this->queryString = $this->queryString . " $string";
-        } else {
             $this->queryString = $this->queryString . " *";
+        } else {
+            $this->queryString = $this->queryString . " $columnName";
         }
-        return $this;
-    }
-
-    public function selectId(): QueryBuilder
-    {
-        $this->queryString = "SELECT id";
         return $this;
     }
 
@@ -46,11 +28,31 @@ class QueryBuilder
         return $this;
     }
 
+    public function where(string $whereName, string $whereValue): QueryBuilder
+    {
+
+        $this->queryString = $this->queryString . " WHERE " . $whereName . " = '" . "$whereValue'";
+        return $this;
+    }
+
+    public function and(string $whereName, string $whereValue): QueryBuilder
+    {
+        $this->queryString = $this->queryString . " AND " . $whereName . " = '" . "$whereValue'" ;
+        return $this;
+    }
+    public function or(string $whereName, string $whereValue): QueryBuilder
+    {
+        $this->queryString = $this->queryString . " OR " . $whereName . " = '" . "$whereValue'" ;
+        return $this;
+    }
+
     public function whereId($id): QueryBuilder
     {
+
         $this->queryString = $this->queryString . " WHERE id = '$id' ";
         return $this;
     }
+
 
     public function whereEmployeeId($id): QueryBuilder
     {
