@@ -2,16 +2,25 @@
 if (isset($message)) {
     echo $message['success'];
 }
+
+
 if (isset($data)) {
-    echo "<div>";
-    echo "<table>";
-    echo "<thead>";
+    echo "<div class='container'>";
+    echo "<table class='table'>";
+    echo "<thead class='thead-light'>";
     echo "<tr>";
-    echo "<th>numerelis</th>";
-    echo "<th>langelis</th>";
-    echo "<th>Busena</th>";
+    echo "<th scope='col'>Numerėlis</th>";
+    echo "<th scope='col'>Langelis</th>";
+    echo "<th scope='col'>Būsena</th>";
     if (isset($_GET['customerId'])) {
         echo "<th>Laikas</th>";
+        echo "<th></th>";
+        echo "<th></th>";
+        echo "</tr>";
+    } else {
+        echo "<th></th>";
+        echo "<th></th>";
+        echo "</tr>";
     }
 
     echo "</tr>";

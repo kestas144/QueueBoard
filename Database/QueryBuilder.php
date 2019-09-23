@@ -14,7 +14,6 @@ class QueryBuilder
     public function column(string $columnName): QueryBuilder
     {
         if ($columnName == 'all') {
-
             $this->queryString = $this->queryString . " *";
         } else {
             $this->queryString = $this->queryString . " $columnName";
@@ -45,12 +44,16 @@ class QueryBuilder
         $this->queryString = $this->queryString . " AND " . $whereName . " = '" . "$whereValue'" ;
         return $this;
     }
+    public function andGreaterThan(string $whereName, string $whereValue): QueryBuilder
+    {
+        $this->queryString = $this->queryString . " AND " . $whereName . " > '" . "$whereValue'" ;
+        return $this;
+    }
     public function or(string $whereName, string $whereValue): QueryBuilder
     {
         $this->queryString = $this->queryString . " OR " . $whereName . " = '" . "$whereValue'" ;
         return $this;
     }
-
 
     public function insertInto($table, $paramNameString, $paramValuesString): QueryBuilder
     {
@@ -58,7 +61,12 @@ class QueryBuilder
 
         return $this;
     }
+    public function insertIntoOnDuplicateKey($table, $paramNameString, $paramValuesString): QueryBuilder
+    {
+        $this->queryString = "INSERT INTO $table ($paramNameString) VALUES ($paramValuesString) ON DUPLICATE KEY UPDATE ";
 
+        return $this;
+    }
     public function update($table, $paramString): QueryBuilder
     {
         $this->queryString = "UPDATE $table SET $paramString";

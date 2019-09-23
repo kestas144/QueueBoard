@@ -4,9 +4,9 @@ namespace QueueBoard\Database;
 
 class BoardDatabase extends Database
 {
-    public function __construct(string $serverName, string $port, string $database, string $username)
+    public function __construct(string $serverName, string $port, string $database, string $username, string $password)
     {
-        parent::__construct($serverName, $port, $database, $username);
+        parent::__construct($serverName, $port, $database, $username,$password);
         //$this->createDatabase();
         $this->createTables();
     }

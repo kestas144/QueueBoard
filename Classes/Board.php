@@ -2,7 +2,6 @@
 
 namespace QueueBoard\Classes;
 
-use QueueBoard\Database\Customer;
 use QueueBoard\Database\Database;
 use QueueBoard\Database\QueryBuilder;
 
@@ -70,38 +69,92 @@ class Board
         return $this->database->getData($query);
     }
 
+    public function updateWaitingTimes()
+    {
+        $employeesArray = $this->getBusyEmployees();
+        foreach ($employeesArray as $value) {
+            $query = $this->queryBuilder
+                ->select()
+                ->column('id,employee_id, customer_id, created_at')
+                ->from('board')
+                ->where('employee_id', $value)
+                ->and('status', 'waiting')
+                ->or('employee_id', $value)
+                ->and('status', 'serviced')
+                ->orderBy('created_at', 'ASC');
+            $data = $this->database->getData($query);
+
+            foreach ($data as $key => $element) {
+                $query = $this->queryBuilder
+                    ->select()
+                    ->column('id, average_operation_time')
+                    ->from('employees')
+                    ->where('id', $element['employee_id']);
+                $avgEmployeeTime = $this->database->getData($query);
+
+                $paramValue = $avgEmployeeTime[0]['average_operation_time'] * ($key + 1);
+                $paramString = "countdown = '$paramValue'";
+                $query = $this->queryBuilder
+                    ->update('board', $paramString)
+                    ->where('id', $element['id']);
+                $this->database->setData($query);
+            }
+        }
+    }
+
     public function changeStatusAll()
     {
+        $employeesArray = $this->getBusyEmployees();
+        foreach ($employeesArray as $value) {
+            $query = $this->queryBuilder
+                ->select()
+                ->column('all')
+                ->from('board')
+                ->where('employee_id', $value)
+                ->and('status', 'waiting')
+                ->or('employee_id', $value)
+                ->and('status', 'serviced')
+                ->orderBy('status', 'DESC');
 
+            $data = $this->database->getData($query);
+           if(empty($data)){
+               continue;
+           }
+            $countTime = null;
+            $id = null;
+            $empId = null;
+
+            foreach ($data as $date) {
+                if ($date['status'] == 'serviced') {
+                    $empId = $date['employee_id'];
+                    continue;
+                } else {
+                    $timeNow = strtotime("now");
+                    $timeCreated = strtotime($date['created_at']);
+                    $time = $timeNow - $timeCreated;
+                    if ($time > $countTime) {
+                        $countTime = $time;
+                        $id = $date['id'];
+                    }
+                }
+            }
+            if ($empId != null) {
+                $id = null;
+            } else {
+                $this->changeStatus($id, 'serviced', 'board');
+            }
+        }
+    }
+
+    private function getBusyEmployees()
+    {
         $query = $this->queryBuilder
             ->select()
             ->column('id')
             ->from('employees')
             ->where('status', 'busy');
         $employees = $this->database->getData($query);
-        $employeesArray = array_values(array_column($employees, 'id'));
-
-        foreach ($employeesArray as $value) {
-            $query = $this->queryBuilder
-                ->select()
-                ->column('id, created_at')
-                ->from('board')
-                ->where('employee_id', $value)
-                ->and('status', 'waiting');
-            $data = $this->database->getData($query);
-            $countTime = null;
-            $id = null;
-            foreach ($data as $date) {
-                $timeNow = strtotime("now");
-                $timeCreated = strtotime($date['created_at']);
-                $time = $timeNow - $timeCreated;
-                if ($time > $countTime) {
-                    $countTime = $time;
-                    $id = $date['id'];
-                }
-            }
-            $this->changeStatus($id, 'serviced', 'board');
-        }
+        return array_values(array_column($employees, 'id'));
     }
 
     public function getEntryByCustomerId($customerId)
@@ -127,6 +180,9 @@ class Board
     {
         if (isset ($boardId)) {
             $this->changeStatus($boardId, 'completed', 'board');
+            if (empty($this->getEntriesByEmployeeId($this->employeeId))) {
+                $this->changeStatus($this->employeeId, 'free', 'employees');
+            }
             $operationTime = $this->getOperationTime($boardId);
             $data = $this->getDataFromDb(
                 'customer_count, average_operation_time',
@@ -143,9 +199,23 @@ class Board
             $paramString = "customer_count = '" . $customerCount . "', average_operation_time = '$averageTime" . "'";
 
             $this->changeColumn($paramString, 'employees', 'id', $this->employeeId);
+
         }
 
         return $this->getDataFromDb('all', 'board', 'employee_id', $this->employeeId);
+    }
+
+    public function getEntriesByEmployeeId(string $employeeId)
+    {
+        $query = $this->queryBuilder
+            ->select()
+            ->column('all')
+            ->from('board')
+            ->where('employee_id', $employeeId)
+            ->and('status', 'waiting')
+            ->or('status', 'serviced')
+            ->and('employee_id', $employeeId);
+        return $this->database->getData($query);
     }
 
     public function writeCustomerToBoard()
@@ -159,21 +229,54 @@ class Board
         $this->database->setData($boardEntryQuery);
 
         $this->changeStatus($this->employeeId, 'busy', 'employees');
-
     }
 
-    public function postponeAppointment(string $employeeId, string $customerId): void
+    public function postponeAppointment(string $employeeId, string $customerId): string
     {
+        $query = $this->queryBuilder
+            ->select()
+            ->column('id, created_at')
+            ->from('board')
+            ->where('customer_id', $customerId)
+            ->and('status', 'waiting')
+            ->orderBy('created_at', 'ASC');
+        $createdDate = $this->database->getData($query);
+        $createdDate[0]['created_at'];
 
         $query = $this->queryBuilder
             ->select()
-            ->column('all')
+            ->column('id, created_at, customer_id')
             ->from('board')
             ->where('employee_id', $employeeId)
+            ->and('status', 'waiting')
+            ->andGreaterThan('created_at', $createdDate[0]['created_at'])
             ->orderBy('created_at', 'ASC');
-        $data = $this->database->getData($query);
-        var_dump($data);
 
+        $greaterThan = $this->database->getData($query);
+
+        if (empty($greaterThan)) {
+            return "esate paskutinis eilėje, pavėlinimas negalimas";
+        } else {
+            $idLater = $greaterThan[0]['id'];
+            $customerIdLater = $customerId;
+            $idSooner = $createdDate[0]['id'];
+            $customerISooner = $greaterThan[0]['customer_id'];
+
+            $paramValueStringFirst = "customer_id = '$customerIdLater'";
+            $paramValueStringSecond = "customer_id = '$customerISooner'";
+            $query = $this->queryBuilder
+                ->update('board', $paramValueStringFirst)
+                ->where('id', $idLater);
+
+            $this->database->setData($query);
+
+            $query = $this->queryBuilder
+                ->update('board', $paramValueStringSecond)
+                ->where('id', $idSooner);
+
+            $this->database->setData($query);
+            return "pavėlinote laiką";
+        }
     }
 
     private function changeColumn(string $paramString, string $table, string $whereName, string $whereValue)
@@ -186,7 +289,13 @@ class Board
 
     private function getOperationTime(string $id): int
     {
-        $data = $this->getDataFromDb('created_at, updated_at', 'board', 'id', $id);
+        $query = $this->queryBuilder
+            ->select()
+            ->column('created_at, updated_at')
+            ->from('board')
+            ->where('id', $id)
+            ->and('status', 'completed');
+        $data = $this->database->getData($query);
         $time = strtotime($data[0]['updated_at']) - strtotime($data[0]['created_at']);
         return $time;
     }

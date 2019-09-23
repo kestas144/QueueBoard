@@ -13,11 +13,12 @@ require_once 'Views/header.php';
 
 
 if (isset($_GET['employeeId'])) {
+
     $database = new BoardDatabase("localhost", "3308", "db_board", "root", "");
     $builder = new QueryBuilder();
     $board = new Board($database, $builder, null, $_GET['employeeId']);
-    if (isset($_GET['boardId'])) {
-        $data = $board->getEmployeeWaitingCustomers($_GET['boardId']);
+    if (isset($_GET['completedId'])) {
+        $data = $board->getEmployeeWaitingCustomers($_GET['completedId']);
     } else {
         $data = $board->getEmployeeWaitingCustomers();
     }

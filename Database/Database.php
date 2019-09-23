@@ -7,14 +7,15 @@ abstract class Database
     protected $connection;
     protected $database;
 
-    public function __construct(string $serverName, string $port, string $database, string $username)
+    public function __construct(string $serverName, string $port, string $database, string $username, string $password)
     {
         $this->database =
             new PDO("mysql:host=" . $serverName . ";
             port=" . $port . ";
-            dbname=" . $database . "", $username);
+            dbname=" . $database . "", $username, $password);
 
         $this->database->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
 
     }
 
