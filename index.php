@@ -21,7 +21,6 @@ $builder = new QueryBuilder();
 $board = new Board($database, $builder);
 $board->changeStatusAll();
 $customers = $board->getAllWaitingCustomers();
-var_dump($customers);
 
 require_once 'Views/List.php';
 require_once 'Views/footer.php';

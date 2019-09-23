@@ -2,16 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1dc8c165-866c-4886-abbc-40d45838dbac" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Classes/Board.php" afterPath="$PROJECT_DIR$/Classes/Board.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Database/BoardDatabase.php" afterPath="$PROJECT_DIR$/Database/BoardDatabase.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Database/Database.php" afterPath="$PROJECT_DIR$/Database/Database.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Database/QueryBuilder.php" afterPath="$PROJECT_DIR$/Database/QueryBuilder.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Views/List.php" afterPath="$PROJECT_DIR$/Views/List.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Views/header.php" afterPath="$PROJECT_DIR$/Views/header.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Views/userBody.php" afterPath="$PROJECT_DIR$/Views/userBody.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Views/userScripts.php" afterPath="$PROJECT_DIR$/Views/userScripts.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/customerPage.php" afterPath="$PROJECT_DIR$/customerPage.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/employeePage.php" afterPath="$PROJECT_DIR$/employeePage.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/index.php" afterPath="$PROJECT_DIR$/index.php" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -24,11 +14,11 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="index.php" pinned="false" current-in-tab="false">
+      <file leaf-file-name="index.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="320">
-              <caret line="22" column="34" lean-forward="true" selection-start-line="22" selection-start-column="34" selection-end-line="22" selection-end-column="34" />
+            <state relative-caret-position="360">
+              <caret line="24" column="30" lean-forward="true" selection-start-line="24" selection-start-column="30" selection-end-line="24" selection-end-column="30" />
               <folding>
                 <element signature="e#6#35#0#PHP" expanded="true" />
               </folding>
@@ -70,17 +60,27 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Board.php" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Board.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Classes/Board.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="390">
-              <caret line="70" column="48" lean-forward="true" selection-start-line="70" selection-start-column="48" selection-end-line="70" selection-end-column="48" />
+            <state relative-caret-position="190">
+              <caret line="60" column="44" lean-forward="true" selection-start-line="60" selection-start-column="44" selection-end-line="60" selection-end-column="44" />
               <folding>
                 <element signature="e#38#71#0#PHP" expanded="true" />
                 <marker date="1569269225992" expanded="true" signature="3574:3583" ph="SELECT Order... Orders" />
                 <marker date="1569269225992" expanded="true" signature="3733:3895" ph="select() -&gt;c... " />
                 <marker date="1569269225992" expanded="true" signature="3733:3939" ph="select() -&gt;c... " />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Database.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Database/Database.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="430">
+              <caret line="25" column="5" lean-forward="true" selection-start-line="25" selection-start-column="5" selection-end-line="25" selection-end-column="5" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -141,9 +141,9 @@
         <option value="$PROJECT_DIR$/.htaccess" />
         <option value="$PROJECT_DIR$/employeePage.php" />
         <option value="$PROJECT_DIR$/customerPage.php" />
-        <option value="$PROJECT_DIR$/index.php" />
-        <option value="$PROJECT_DIR$/index.php" />
         <option value="$PROJECT_DIR$/Classes/Board.php" />
+        <option value="$PROJECT_DIR$/index.php" />
+        <option value="$PROJECT_DIR$/index.php" />
       </list>
     </option>
   </component>
@@ -330,12 +330,12 @@
       <workItem from="1568985200315" duration="29034000" />
       <workItem from="1569041332267" duration="124000" />
       <workItem from="1569089299463" duration="22103000" />
-      <workItem from="1569152795995" duration="80836000" />
+      <workItem from="1569152795995" duration="81052000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="184170000" />
+    <option name="totallyTimeSpent" value="184386000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1378" height="754" extended-state="0" />
@@ -796,14 +796,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Database/Database.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="430">
-          <caret line="25" column="5" lean-forward="true" selection-start-line="25" selection-start-column="5" selection-end-line="25" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/.htaccess">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="180">
@@ -848,16 +840,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/index.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="320">
-          <caret line="22" column="34" lean-forward="true" selection-start-line="22" selection-start-column="34" selection-end-line="22" selection-end-column="34" />
-          <folding>
-            <element signature="e#6#35#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Database/QueryBuilder.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="276">
@@ -890,13 +872,31 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Classes/Board.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="390">
-          <caret line="70" column="48" lean-forward="true" selection-start-line="70" selection-start-column="48" selection-end-line="70" selection-end-column="48" />
+        <state relative-caret-position="190">
+          <caret line="60" column="44" lean-forward="true" selection-start-line="60" selection-start-column="44" selection-end-line="60" selection-end-column="44" />
           <folding>
             <element signature="e#38#71#0#PHP" expanded="true" />
             <marker date="1569269225992" expanded="true" signature="3574:3583" ph="SELECT Order... Orders" />
             <marker date="1569269225992" expanded="true" signature="3733:3895" ph="select() -&gt;c... " />
             <marker date="1569269225992" expanded="true" signature="3733:3939" ph="select() -&gt;c... " />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Database/Database.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="430">
+          <caret line="25" column="5" lean-forward="true" selection-start-line="25" selection-start-column="5" selection-end-line="25" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/index.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="24" column="30" lean-forward="true" selection-start-line="24" selection-start-column="30" selection-end-line="24" selection-end-column="30" />
+          <folding>
+            <element signature="e#6#35#0#PHP" expanded="true" />
           </folding>
         </state>
       </provider>
