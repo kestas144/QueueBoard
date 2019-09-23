@@ -12,7 +12,7 @@
         <button type="submit" class="btn btn-primary">Registruotis</button>
     </form>
 </div>
-
+<h2> Švieslentė</h2>
 <div class="container">
     <table id="tableName" class="table">
         <thead class="thead-light">
@@ -41,7 +41,7 @@
 </div>
 
 <div class="container" id="formContainer">
-    <h4>Pasitikrinkite apsilankymo laiką</h4>
+    <h2>Pasitikrinkite apsilankymo laiką</h2>
     <form action="/customerPage.php" method="get">
         <div class="form-group">
             <label for="id">Sugeneruotas Id</label>
