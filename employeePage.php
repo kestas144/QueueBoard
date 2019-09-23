@@ -3,7 +3,6 @@ use QueueBoard\Classes\Board;
 use QueueBoard\Database\BoardDatabase;
 use QueueBoard\Database\QueryBuilder;
 
-
 require_once 'Database/Database.php';
 require_once 'Database/BoardDatabase.php';
 require_once 'Database/QueryBuilder.php';
@@ -14,7 +13,6 @@ $config = include 'config.php';
 
 if (isset($_GET['employeeId'])) {
 
-   // $database = new BoardDatabase("localhost", "3308", "db_board", "root", "");
     $database = new BoardDatabase(
         $config['host'],
         $config['port'],

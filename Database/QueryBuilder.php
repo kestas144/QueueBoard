@@ -83,6 +83,11 @@ class QueryBuilder
         $this->queryString = $this->queryString . " ORDER BY $column $order";
        return $this;
     }
+    public function limit($offset, $amount): QueryBuilder
+    {
+        $this->queryString = $this->queryString . " LIMIT $offset , $amount";
+        return $this;
+    }
 
     public function __toString(): string
     {

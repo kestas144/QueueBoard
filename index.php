@@ -17,15 +17,14 @@ $database = new BoardDatabase(
         $config['database'],
         $config['username'],
         $config['password']);
-//$database = new BoardDatabase("localhost", "3308", "db_board", "root", "");
 $builder = new QueryBuilder();
-
 $board = new Board($database, $builder);
 $board->changeStatusAll();
 $customers = $board->getAllWaitingCustomers();
+var_dump($customers);
 
 require_once 'Views/List.php';
 require_once 'Views/footer.php';
-?>
+
 
 

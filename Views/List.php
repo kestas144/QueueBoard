@@ -2,7 +2,7 @@
 ?>
 <body>
 
-<div class="container">
+<div class="container" id="formContainer">
     <h2>Registracijos forma</h2>
     <form action="/customerPage.php" method="post">
         <div class="form-group">
@@ -14,7 +14,7 @@
 </div>
 
 <div class="container">
-    <table class="table">
+    <table id="tableName" class="table">
         <thead class="thead-light">
         <tr>
             <th scope="col">Numerėlis</th>
@@ -40,11 +40,11 @@
 
 </div>
 
-<div class="container">
+<div class="container" id="formContainer">
     <h4>Pasitikrinkite apsilankymo laiką</h4>
     <form action="/customerPage.php" method="get">
         <div class="form-group">
-            <label for="id">Id</label>
+            <label for="id">Sugeneruotas Id</label>
             <input type="text" class="form-control" id="name" placeholder="Įveskite savo Id" name="customerId">
         </div>
         <button type="submit" class="btn btn-primary">Tikrinti</button>

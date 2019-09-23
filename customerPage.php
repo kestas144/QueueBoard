@@ -13,7 +13,6 @@ require_once 'Views/header.php';
 $config = include 'config.php';
 
 if (isset($_POST['name']) || isset($_GET['customerId']) || isset($_GET['delayId']) || isset($_GET['cancelId'])) {
-//   $database = new BoardDatabase("localhost", "3308", "db_board", "root", "");
     $database = new BoardDatabase(
         $config['host'],
         $config['port'],
@@ -28,18 +27,19 @@ if (isset($_POST['name']) || isset($_GET['customerId']) || isset($_GET['delayId'
         $customer->createCustomer();
         $customerId = $customer->getId();
         $board = new Board($database, $builder,$customerId);
-        $board->writeCustomerToBoard();
+        $message = $board->writeCustomerToBoard();
 
-        $message['success'] = 'sėkmingai prisiregistruota';
+        require_once 'Views/userCreate.php';
+        require_once 'Views/userScripts.php';
+
     } elseif (isset($_GET['delayId'])||isset($_GET['cancelId'])) {
         $board = new Board($database, $builder);
-        if(isset($_GET['delayId'])) {
-            echo $board->postponeAppointment($_GET['delayId'],$_GET['customerId']);
+        if(isset($_GET['delayId']) && !(isset($_GET['cancelId']))) {
+            $message = $board->postponeAppointment($_GET['delayId'],$_GET['customerId']);
         }
         else {
             $board->changeStatus($_GET['cancelId'],'canceled','board');
         }
-
         $data = $board->getEntryByCustomerId($_GET['customerId']);
     } else {
         $board = new Board($database, $builder);

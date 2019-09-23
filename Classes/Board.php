@@ -65,11 +65,13 @@ class Board
             ->column('all')
             ->from('board')
             ->where('status', 'waiting')
-            ->or('status', 'serviced');
+            ->or('status', 'serviced')
+            ->orderBy('created_at','ASC')
+            ->limit('0','7');
         return $this->database->getData($query);
     }
 
-    public function updateWaitingTimes()
+    public function updateWaitingTimes(): void
     {
         $employeesArray = $this->getBusyEmployees();
         foreach ($employeesArray as $value) {
@@ -102,7 +104,7 @@ class Board
         }
     }
 
-    public function changeStatusAll()
+    public function changeStatusAll(): void
     {
         $employeesArray = $this->getBusyEmployees();
         foreach ($employeesArray as $value) {
@@ -201,8 +203,15 @@ class Board
             $this->changeColumn($paramString, 'employees', 'id', $this->employeeId);
 
         }
-
-        return $this->getDataFromDb('all', 'board', 'employee_id', $this->employeeId);
+        $query = $this->queryBuilder
+            ->select()
+            ->column('all')
+            ->from('board')
+            ->where('employee_id', $this->employeeId)
+            ->and('status', 'serviced')
+            ->or('status', 'completed')
+            ->and('employee_id', $this->employeeId);
+        return $this->database->getData($query);
     }
 
     public function getEntriesByEmployeeId(string $employeeId)
@@ -229,6 +238,7 @@ class Board
         $this->database->setData($boardEntryQuery);
 
         $this->changeStatus($this->employeeId, 'busy', 'employees');
+        return "Sėkmingai prisiregistruota, Jūsų id = $this->customerId";
     }
 
     public function postponeAppointment(string $employeeId, string $customerId): string
@@ -255,7 +265,7 @@ class Board
         $greaterThan = $this->database->getData($query);
 
         if (empty($greaterThan)) {
-            return "esate paskutinis eilėje, pavėlinimas negalimas";
+            return "Esate paskutinis eilėje, pavėlinimas negalimas";
         } else {
             $idLater = $greaterThan[0]['id'];
             $customerIdLater = $customerId;
@@ -275,7 +285,7 @@ class Board
                 ->where('id', $idSooner);
 
             $this->database->setData($query);
-            return "pavėlinote laiką";
+            return "Pavėlinote laiką";
         }
     }
 
@@ -318,13 +328,6 @@ class Board
     private function calculateTime()
     {
         return $this->employeeCustomerCount * $this->employeeAverageTime;
-    }
-
-    private function camelCaseConverter(string $string): string
-    {
-        $str = substr($string, 1);
-        $output = strtolower(preg_replace('/[A-Z]/', '_$0', $str));
-        return $output;
     }
 
 }

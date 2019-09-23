@@ -7,28 +7,8 @@ class BoardDatabase extends Database
     public function __construct(string $serverName, string $port, string $database, string $username, string $password)
     {
         parent::__construct($serverName, $port, $database, $username,$password);
-        //$this->createDatabase();
         $this->createTables();
     }
-
-    public function createDatabase()
-    {
-//        $check = $this->database->query
-//        ("SELECT COUNT(*)
-//                    FROM INFORMATION_SCHEMA.SCHEMATA
-//                    WHERE SCHEMA_NAME = 'db_board'");
-//        return (bool) $check->fetchColumn();
-
-//       $check = $this->database->query("SHOW DATABASES LIKE 'dbname'");
-//
-//        if ($this->database->query()) {
-//            echo "Database created successfully";
-//        } else {
-//            echo "Error creating database: " . mysqli_error($conn);
-//        }
-//        $sql = "CREATE DATABASE db_board";
-    }
-
 
     public function createTables()
     {

@@ -1,0 +1,20 @@
+#userCreate {
+    font-size: 25px;
+    font-weight: 500;
+    margin: 20px;
+    padding-top: 100px;
+    padding-bottom: 50px;
+}
+#userTable  {
+    padding: 30px;
+}
+#tableName  {
+    text-align: center;
+    padding: 10px;
+}
+#formContainer {
+    padding: 50px;
+}
+
+
+

@@ -15,8 +15,6 @@ abstract class Database
             dbname=" . $database . "", $username, $password);
 
         $this->database->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-
     }
 
     public function getData(string $query)
