@@ -35,7 +35,7 @@ class BoardDatabase extends Database
         if ($this->database->query("SHOW TABLES LIKE 'customers'")->rowCount() > 0) {
         } else {
             $sql = "CREATE TABLE customers(
-                id INT(11) AUTO_INCREMENT PRIMARY KEY,
+                id VARCHAR(13) UNIQUE PRIMARY KEY,
                 name VARCHAR(255) NOT NULL
                 )
                 ENGINE = InnoDB CHARACTER SET = utf8";
@@ -45,7 +45,7 @@ class BoardDatabase extends Database
         if ($this->database->query("SHOW TABLES LIKE 'employees'")->rowCount() > 0) {
         } else {
             $sql = "CREATE TABLE employees(
-                  id INT(11) AUTO_INCREMENT PRIMARY KEY,
+                  id VARCHAR(13) UNIQUE PRIMARY KEY,
                   name VARCHAR(255) NOT NULL,
                   status ENUM('busy', 'free') NOT NULL,
                   customer_count VARCHAR(255) NOT NULL,
@@ -59,10 +59,10 @@ class BoardDatabase extends Database
         if ($this->database->query("SHOW TABLES LIKE 'board'")->rowCount() > 0) {
         } else {
             $sql = "CREATE TABLE board(
-                  id INT(11) AUTO_INCREMENT PRIMARY KEY,
-                  customer_id INT(11) NULL,
-                  employee_id INT(11) NULL,
-                  status ENUM('waiting', 'serviced', 'completed') NOT NULL,
+                  id INT(13) AUTO_INCREMENT PRIMARY KEY,
+                  customer_id VARCHAR(13) NULL,
+                  employee_id VARCHAR(13) NULL,
+                  status ENUM('waiting', 'serviced', 'completed','canceled') NOT NULL,
                   countdown VARCHAR(255),
                   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                   updated_at TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

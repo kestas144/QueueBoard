@@ -4,57 +4,22 @@ use QueueBoard\Database\BoardDatabase;
 use QueueBoard\Database\QueryBuilder;
 
 
-require_once  'Database/Database.php';
-require_once  'Database/BoardDatabase.php';
-require_once  'Database/QueryBuilder.php';
-require_once  'Classes/Board.php';
-require_once  'Classes/Customer.php';
+require_once 'Database/Database.php';
+require_once 'Database/BoardDatabase.php';
+require_once 'Database/QueryBuilder.php';
+require_once 'Classes/Board.php';
+require_once 'Classes/Customer.php';
+require_once 'Views/header.php';
 
-$database = new BoardDatabase("localhost", "3308","db_board", "root", "");
+$database = new BoardDatabase("localhost", "3308", "db_board", "root", "");
 $builder = new QueryBuilder();
 
 $board = new Board($database, $builder);
-
+$board->changeStatusAll();
 $customers = $board->getAllWaitingCustomers();
 
-
-
-
+require_once 'Views/List.php';
+require_once 'Views/footer.php';
 ?>
-<html>
-<body>
-<div class="container">
 
-        <form method="POST" action="/customerView.php">
 
-        <label for="name">Name</label>
-        <input type="text" name="name" placeholder="Your name..">
-        <input type="submit" value="Register">
-
-    </form>
-</div>
-<div>
-    <table>
-        <thead>
-        <tr>
-            <th>numerelis</th>
-            <th>langelis</th>
-            <th>busena</th>
-        </tr>
-        </thead>
-        <tbody>
-    <?php
-    foreach ($customers as $customer): ?>
-        <tr>
-            <th><?php echo $customer['customer_id'] ?></th>
-            <th><?php echo $customer['employee_id'] ?></th>
-            <th><?php echo $customer['status'] ?></th>
-        </tr>
-
-<?php endforeach;?>
-    </tbody>
-    </table>
-
-</div>
-</body>
-</html>
